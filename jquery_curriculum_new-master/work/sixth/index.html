@@ -14,8 +14,95 @@
     <button type="button" class="btn search-btn" id="pokemon_search">ポケモンを探す</button>
   </div>
   <script src="../../common/js/jquery.js"></script>
-  <script>
-    // 回答はここに書いてね
-  </script>
+
 </body>
-</html>
+</html>  <script>
+    $(function(){
+      // 「捕まえる」失敗時の画面表示
+      let failHtml =
+      `
+        <p class="text">逃げられてしまった...</p>
+        <button class="btn mt" data-js="reset">戻る</button>
+      `
+
+      // 「ポケモンを探す」後の画面表示
+      let encountHtml =
+      `
+        <p class="name"></p>
+        <div>
+          <img class="img" src="" alt="">
+        </div>
+        <div>
+          <button class="btn" id="catch">捕まえる</button>
+          <button class="btn" data-js="reset">逃げる</button>
+        </div>
+      `
+
+      // 「捕まえる」成功時の画面表示
+      let doneHtml =
+      `
+        <p class="name">ゲットしました</p>
+        <div>
+          <img class="img" src="" alt="">
+        </div>
+        <button class="btn" data-js="reset">戻る</button>
+      `
+
+      function searchPokemon(id){
+        $.ajax({
+          url: `https://pokeapi.co/api/v2/pokemon/${id}`,
+          method: 'GET'
+        }).done(function(res) {
+          console.log(res);
+          $('.wrapper').html(encountHtml);
+          $('.img').attr('src', res.sprites.front_default);
+
+          $.ajax({
+            url: `https://pokeapi.co/api/v2/pokemon-species/${id}/`,
+            method: 'GET'
+          }).done(function(resName) {
+            var japaneseName = resName.names.find(
+              (name) => name.language.name === 'ja'
+            );
+            $('.name').text(japaneseName.name);
+          })
+        })
+      }
+
+      function catchPokemon(check) {
+        $.ajax({
+          url: 'https://pokeapi.co/api/v2/item/4',
+          method: 'GET'
+        }).done(function(res){
+          if (check < 0.5) {
+            $('.wrapper').html(doneHtml);
+            $('.img').attr('src', 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png')
+            console.log(res);
+          } else {
+            $('.wrapper').html(failHtml);
+          }
+        })
+      }
+
+      function reset(data) {
+        if (data === 'reset') {
+          $('.wrapper').html('<button type="button" class="btn search-btn" id="pokemon_search">ポケモンを探す</button>');
+        }
+      }
+
+      $(document).on('click', '#pokemon_search', function() {
+        var pokemonId = Math.floor(Math.random() * 151) + 1;
+        searchPokemon(pokemonId);
+      })
+
+      $(document).on('click', '#catch', function() {
+        var random = Math.random();
+        catchPokemon(random);
+      })
+
+      $(document).on('click', '.btn', function() {
+        var data = $(this).data('js');
+        reset(data);
+      })
+    })
+  </script>

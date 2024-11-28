@@ -87,11 +87,11 @@
       $(function(){
         function selectCategory(value) {
           $('.list').find('li').each(function() {
-            var data = $(this).data('category-type');
+            var categoryType = $(this).data('category-type');
 
             if (value === 'all') {
               $('.list').find('li').show();
-            } else if (value === data) {
+            } else if (value === categoryType) {
               $(this).show()
             } else {
               $(this).hide()
@@ -100,8 +100,8 @@
         }
 
         $('.select').change(function() {
-          var value = $(this).val();
-          selectCategory(value);
+          var categoryValue = $(this).val();
+          selectCategory(categoryValue);
         })
       })
       // 今回やるのはフィルタリング機能です。

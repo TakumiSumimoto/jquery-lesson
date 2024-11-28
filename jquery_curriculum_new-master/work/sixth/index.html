@@ -53,7 +53,6 @@
           url: `https://pokeapi.co/api/v2/pokemon/${id}`,
           method: 'GET'
         }).done(function(res) {
-          console.log(res);
           $('.wrapper').html(encountHtml);
           $('.img').attr('src', res.sprites.front_default);
 
@@ -77,7 +76,6 @@
           if (check < 0.5) {
             $('.wrapper').html(doneHtml);
             $('.img').attr('src', 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png')
-            console.log(res);
           } else {
             $('.wrapper').html(failHtml);
           }
